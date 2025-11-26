@@ -13,23 +13,23 @@ public class Offsetter {
     private var srcPoly = Path()
     private var destPoly = Path()
     private var normals = Path()
-    private var delta = CGFloat.zero
-    private var sinA = CGFloat.zero
-    private var sin = CGFloat.zero
-    private var cos = CGFloat.zero
-    private var miterLim = CGFloat.zero
-    private var stepsPerRad = CGFloat.zero
+    private var delta = Double.zero
+    private var sinA = Double.zero
+    private var sin = Double.zero
+    private var cos = Double.zero
+    private var miterLim = Double.zero
+    private var stepsPerRad = Double.zero
     
     private var lowest = CGPoint.zero
     private var polyNodes = PolyNode()
     
-    public var arcTolerance = CGFloat.zero
-    public var miterLimit = CGFloat.zero
+    public var arcTolerance = Double.zero
+    public var miterLimit = Double.zero
     
-    private let TwoPi = CGFloat.pi * 2
-    private let ArcTolerance: CGFloat = 0.25
+    private let TwoPi = Double.pi * 2
+    private let ArcTolerance: Double = 0.25
     
-    public init(miterLimit: CGFloat = 2.0, arcTolerance: CGFloat = 0.25) {
+    public init(miterLimit: Double = 2.0, arcTolerance: Double = 0.25) {
         self.miterLimit = miterLimit
         self.arcTolerance = arcTolerance
         lowest.x = -1
@@ -138,7 +138,7 @@ public class Offsetter {
     }
     
     
-    private func doOffset(_ delta: CGFloat) {
+    private func doOffset(_ delta: Double) {
         destPolys = Paths()
         self.delta = delta
         
@@ -159,7 +159,7 @@ public class Offsetter {
             miterLim = 0.5
         }
         
-        var y = CGFloat.zero
+        var y = Double.zero
         if arcTolerance <= 0.0 {
             y = ArcTolerance
         }
@@ -169,7 +169,7 @@ public class Offsetter {
             y = arcTolerance
         }
         //see offset_triginometry2.svg in the documentation folder ...
-        let steps = CGFloat.pi / acos(1 - y / abs(delta))
+        let steps = Double.pi / acos(1 - y / abs(delta))
         
         sin = CoreGraphics.sin(TwoPi / steps)
         cos = CoreGraphics.cos(TwoPi / steps)
@@ -192,17 +192,17 @@ public class Offsetter {
             
             if len == 1 {
                 if node.joinType == .round {
-                    var x: CGFloat = 1.0
-                    var y: CGFloat = 0.0
-                    for _ in 1...steps.int {
+                    var x: Double = 1.0
+                    var y: Double = 0.0
+                    for _ in 1...Int(steps) {
                         destPoly.append([round(srcPoly[0].x + x * delta), round(srcPoly[0].y + y * delta)])
                         let x2 = x
                         x = x * cos - sin * y
                         y = x2 * sin + y * cos
                     }
                 } else {
-                    var x: CGFloat = -1.0
-                    var y: CGFloat = -1.0
+                    var x: Double = -1.0
+                    var y: Double = -1.0
                     for _ in 0...3 {
                         destPoly.append([round(srcPoly[0].x + x * delta), round(srcPoly[0].y + y * delta)])
                         if x < 0 {
@@ -320,7 +320,7 @@ public class Offsetter {
     }
     
     
-    public func execute(_ solution: inout Paths,  delta: CGFloat) throws {
+    public func execute(_ solution: inout Paths,  delta: Double) throws {
 
         fixOrientations ()
         doOffset(delta)
@@ -356,7 +356,7 @@ public class Offsetter {
     }
     
     
-    public func execute(_ solution: PolyTree,  delta: CGFloat) throws {
+    public func execute(_ solution: PolyTree,  delta: Double) throws {
         fixOrientations ()
         doOffset(delta)
         
@@ -448,7 +448,7 @@ public class Offsetter {
     }
 
 
-    private func doMiter (_ j: Int, _ k: Int, _ r: CGFloat) {
+    private func doMiter (_ j: Int, _ k: Int, _ r: Double) {
         let q = delta / r
         destPoly.append([round(srcPoly[j].x + (normals[k].x + normals[j].x) * q),round(srcPoly[j].y + (normals[k].y + normals[j].y) * q)])
     }
@@ -459,7 +459,7 @@ public class Offsetter {
         
         var x = normals[k].x
         var y = normals[k].y
-        var x2 = CGFloat.zero
+        var x2 = Double.zero
         for _ in 0..<steps {
             destPoly.append([round(srcPoly[j].x + x * delta),round(srcPoly[j].y + y * delta)])
             x2 = x

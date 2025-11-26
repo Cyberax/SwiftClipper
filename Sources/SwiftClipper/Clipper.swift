@@ -108,7 +108,7 @@ public class Clipper: ClipperBase {
         return succeeded
     }
     
-    private func getDx(_ pt1: CGPoint,_ pt2: CGPoint) -> CGFloat {
+    private func getDx(_ pt1: CGPoint,_ pt2: CGPoint) -> Double {
         if pt1.y == pt2.y {return Horizontal}
         return pt2.x - pt1.x / pt2.y - pt1.y
     }
@@ -216,7 +216,7 @@ public class Clipper: ClipperBase {
         }
     }
     
-    private func horzSegmentsOverlap(_ seg1a: CGFloat, _ seg1b: CGFloat, _ seg2a: CGFloat, _ seg2b: CGFloat) -> Bool {
+    private func horzSegmentsOverlap(_ seg1a: Double, _ seg1b: Double, _ seg2a: Double, _ seg2b: Double) -> Bool {
         var seg1a = seg1a
         var seg1b = seg1b
         var seg2a = seg2a
@@ -230,7 +230,7 @@ public class Clipper: ClipperBase {
         return (seg1a < seg2b) && (seg2a < seg1b)
     }
     
-    private func insertMaxima(_ x: CGFloat) {
+    private func insertMaxima(_ x: Double) {
         //double-linked list: sorted ascending, ignoring dups.
         let newMax = Maxima()
         newMax.x = x
@@ -288,7 +288,7 @@ public class Clipper: ClipperBase {
         sortedEdges = nil
         maxima = nil
         
-        var botY = CGFloat.zero, topY = CGFloat.zero
+        var botY = Double.zero, topY = Double.zero
         if !popScanbeam(&botY) {
             return false
         }
@@ -310,7 +310,8 @@ public class Clipper: ClipperBase {
             if outRec.pts == nil || outRec.isOpen {
                 continue
             }
-            if (outRec.isHole ^ reverseSolution) == (outRec.area > 0) {
+            let area = outRec.area;
+            if (outRec.isHole ^ reverseSolution) == (area > 0) {
                 outRec.pts.reverse()
             }
         }
@@ -347,7 +348,7 @@ public class Clipper: ClipperBase {
         ghostJoins.append(j)
     }
     
-    private func insertLocalMinimaIntoAEL(_ botY: CGFloat) {
+    private func insertLocalMinimaIntoAEL(_ botY: Double) {
         var lm:LocalMinima?
         while popLocalMinima(botY, &lm) {
             let lb = lm?.leftBound
@@ -1175,7 +1176,7 @@ public class Clipper: ClipperBase {
         }
     }
     
-    private func getHorzDirection(_ HorzEdge: TEdge, _ dir:inout Direction , _ left:inout CGFloat, _ right:inout CGFloat) {
+    private func getHorzDirection(_ HorzEdge: TEdge, _ dir:inout Direction , _ left:inout Double, _ right:inout Double) {
         if HorzEdge.bot.x < HorzEdge.top.x {
             left = HorzEdge.bot.x
             right = HorzEdge.top.x
@@ -1196,7 +1197,7 @@ public class Clipper: ClipperBase {
     /// the AEL. These 'promoted' edges may in turn intersect [%] with other HEs.
     private func processHorizontal(_ horzEdge:inout TEdge) throws {
         var dir:Direction = .leftToRight
-        var horzLeft = CGFloat.zero, horzRight = CGFloat.zero
+        var horzLeft = Double.zero, horzRight = Double.zero
         let isOpen = horzEdge.windDelta == 0
         
         getHorzDirection(horzEdge, &dir, &horzLeft, &horzRight)
@@ -1385,11 +1386,11 @@ public class Clipper: ClipperBase {
         return e != nil && (e!.prev.nextInLML != e) && (e?.next.nextInLML != e)
     }
     
-    private func isMaxima(_ e: TEdge?, _ y: CGFloat) -> Bool {
+    private func isMaxima(_ e: TEdge?, _ y: Double) -> Bool {
         return (e != nil && e!.top.y == y && e?.nextInLML == nil)
     }
     
-    private func isIntermediate(_ e: TEdge, _ y: CGFloat) -> Bool {
+    private func isIntermediate(_ e: TEdge, _ y: Double) -> Bool {
         return (e.top.y == y && e.nextInLML != nil)
     }
     
@@ -1412,7 +1413,7 @@ public class Clipper: ClipperBase {
         return result
     }
     
-    private func processIntersections(_ topY: CGFloat) -> Bool {
+    private func processIntersections(_ topY: Double) -> Bool {
         if activeEdges == nil {
             return true
         }
@@ -1430,7 +1431,7 @@ public class Clipper: ClipperBase {
         return true
     }
     
-    private func buildIntersectList(_ topY: CGFloat) {
+    private func buildIntersectList(_ topY: Double) {
         if activeEdges == nil {
             return
         }
@@ -1483,7 +1484,7 @@ public class Clipper: ClipperBase {
             (inode.edge1.prevInSEL == inode.edge2)
     }
     
-    private func IntersectNodeSort(_ node1: IntersectNode, _ node2: IntersectNode) -> CGFloat {
+    private func IntersectNodeSort(_ node1: IntersectNode, _ node2: IntersectNode) -> Double {
         //the following typecast is safe because the differences in pt.y will
         //be limited to the height of the scanbeam.
         return node2.pt.y - node1.pt.y
@@ -1534,7 +1535,7 @@ public class Clipper: ClipperBase {
         intersectList.removeAll()
     }
     
-    private func processEdgesAtTopOfScanbeam(_ topY: CGFloat) throws {
+    private func processEdgesAtTopOfScanbeam(_ topY: Double) throws {
         var e = activeEdges
         while e != nil {
             //1. process maxima, treating them as if they're 'bent' horizontal edges,
@@ -1686,6 +1687,12 @@ public class Clipper: ClipperBase {
                 pg.append(p.pt)
                 p = p.prev
             }
+            //fix orientation. We walk the polygons in the opposite order to the area
+            let area = pg.signedArea;
+            if ( !reverseSolution && ((outRec.isHole && area > 0) || (!outRec.isHole && area < 0) ||
+                  reverseSolution && ((outRec.isHole && area < 0) || (!outRec.isHole && area > 0))) ){
+              pg = pg.reversed()
+            }
             polyg.append(pg)
         }
     }
@@ -1798,7 +1805,7 @@ public class Clipper: ClipperBase {
         return result
     }
     
-    private func getOverlap(_ a1: CGFloat, _ a2: CGFloat, _ b1: CGFloat, _ b2: CGFloat, _ left:inout CGFloat, _ right:inout CGFloat) -> Bool {
+    private func getOverlap(_ a1: Double, _ a2: Double, _ b1: Double, _ b2: Double, _ left:inout Double, _ right:inout Double) -> Bool {
         if a1 < a2 {
             if b1 < b2 {left = max(a1,b1); right = min(a2,b2)}
             else {left = max(a1,b2); right = min(a2,b1)}
@@ -1972,8 +1979,8 @@ public class Clipper: ClipperBase {
                 return false //a flat 'polygon'
             }
             
-            var left = CGFloat.zero
-            var right = CGFloat.zero
+            var left = Double.zero
+            var right = Double.zero
             //op1 -. Op1b & op2 -. Op2b are the extremites of the horizontal edges
             if !getOverlap(op1.pt.x, op1b.pt.x, op2.pt.x, op2b.pt.x, &left, &right) {
                 return false
@@ -2111,12 +2118,12 @@ public class Clipper: ClipperBase {
         }
     }
     
-    private func parseFirstLeft(_ firstLeft:OutRec?) -> OutRec {
+    private func parseFirstLeft(_ firstLeft:OutRec?) -> OutRec? {
         var firstLeft = firstLeft
         while firstLeft != nil && firstLeft?.pts == nil {
             firstLeft = firstLeft?.firstLeft;
         }
-        return firstLeft!
+        return firstLeft
     }
     
     private func getOutRec(_ idx: Int) -> OutRec {

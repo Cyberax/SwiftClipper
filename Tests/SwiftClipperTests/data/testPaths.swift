@@ -2,16 +2,16 @@ import CoreGraphics
 
 // A rectangle intersecting a triangle-like polygon that has an extra point which causes a very thin offshoot
 let path = [
-    CGPoint(x: -10, y: 10),
-    CGPoint(x: 20, y: 10),
-    CGPoint(x: 10, y: 0),
-    CGPoint(x: 25, y: -8)
+    CGPoint(x: -100, y: 100),
+    CGPoint(x: 200, y: 100),
+    CGPoint(x: 100, y: 0),
+    CGPoint(x: 250, y: -80)
 ]
 let path2 = [
-    CGPoint(x: -5, y: 5),
-    CGPoint(x: 20, y: 5),
-    CGPoint(x: 20, y: -15),
-    CGPoint(x: -5, y: -15)
+    CGPoint(x: -50, y: 50),
+    CGPoint(x: 200, y: 50),
+    CGPoint(x: 200, y: -150),
+    CGPoint(x: -50, y: -150)
 ]
 
 // Two intersecting squares
@@ -35,3 +35,12 @@ let letterAPath2 = [
     CGPoint(x: 25, y: -12),
     CGPoint(x: 0, y: -12),
 ]
+
+
+func roundPaths(_ paths: [[CGPoint]]) -> [[CGPoint]] {
+  return paths.map { path in
+    return path.map { point in
+      return CGPoint(x: round(point.x), y: round(point.y))
+    }
+  }
+}

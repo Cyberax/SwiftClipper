@@ -9,10 +9,10 @@ import Foundation
 import CoreGraphics
 
 public struct Rect: Equatable {
-    var left: CGFloat
-    var top: CGFloat
-    var right: CGFloat
-    var bottom: CGFloat
+    var left: Double
+    var top: Double
+    var right: Double
+    var bottom: Double
     
     static var zero:Rect {
         return Rect(left: 0, top: 0, right: 0, bottom: 0)
@@ -25,7 +25,7 @@ public struct Rect: Equatable {
 }
 
 extension CGRect {
-    var left: CGFloat {
+    var left: Double {
         set {
             origin.x = newValue
         }
@@ -34,7 +34,7 @@ extension CGRect {
         }
     }
     
-    var right: CGFloat {
+    var right: Double {
         set {
             size.width = newValue - left
         }
@@ -43,7 +43,7 @@ extension CGRect {
         }
     }
     
-    var top: CGFloat {
+    var top: Double {
         set {
             origin.y = newValue
         }
@@ -52,7 +52,7 @@ extension CGRect {
         }
     }
     
-    var bottom: CGFloat {
+    var bottom: Double {
         set {
             size.height = newValue - top
         }

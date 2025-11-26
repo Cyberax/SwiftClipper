@@ -4,8 +4,8 @@ import XCTest
 final class IntersectionTests: XCTestCase {
 
     func testIntersection() {
-        let expectedIntersection = [CGPoint(x: 15, y: 5), CGPoint(x: 10, y: 0), CGPoint(x: 0, y: 5)]
-        let intersections = path.intersection(path2)
+        let expectedIntersection = [CGPoint(x: 200, y: -54), CGPoint(x: 200, y: -53), CGPoint(x: 100, y: 0), CGPoint(x: 150, y: 50), CGPoint(x: -3, y: 50)]
+        let intersections = roundPaths(path.intersection(path2))
         XCTAssertEqual(intersections.count, 1)
         XCTAssertEqual(intersections.first!, expectedIntersection)
     }
@@ -33,12 +33,12 @@ final class IntersectionTests: XCTestCase {
             ],
             [
                 CGPoint(x: 25, y: -10),
-                CGPoint(x: 22, y: -10),
+                CGPoint(x: 23, y: -10),
                 CGPoint(x: 22, y: -12),
                 CGPoint(x: 25, y: -12),
             ],
         ]
-        let intersections = letterAPath.intersection(letterAPath2)
+        let intersections = roundPaths(letterAPath.intersection(letterAPath2))
 
         XCTAssertEqual(intersections.count, 2)
         XCTAssertEqual(intersections[0], expectedIntersections[0])

@@ -10,13 +10,13 @@ import CoreGraphics
 
 extension Path {
     
-    public var area: CGFloat {
+    public var signedArea: Double {
         let size = self.count
         if size < 3 {
             return 0
         }
         
-        var a:CGFloat = 0.0
+        var a:Double = 0.0
         var i = 0
         while i < self.count - 1 {
             a += self[i].x * self[i+1].y
@@ -25,11 +25,11 @@ extension Path {
         }
         a += self[count-1].x * self[0].y
         a -= self[0].x * self[count-1].y
-        return abs(a * 0.5)
+        return a * 0.5
     }
     
-    public var circumference: CGFloat {
-        var distance:CGFloat = 0
+    public var circumference: Double {
+        var distance:Double = 0
         if self.count < 2 {
             return distance
         }
@@ -43,7 +43,7 @@ extension Path {
     
     public var centroid:CGPoint {
         var center = CGPoint.zero
-        let polygonArea = area
+        let polygonArea = abs(self.signedArea)
         for index in 0...self.count-1 {
             let vertice = self[index]
             let verticeNext = self[(index+1) % self.count]
@@ -58,7 +58,7 @@ extension Path {
     }
     
     public var orientation: Bool {
-        return self.area >= 0
+        return self.signedArea >= 0
     }
     
     //See "The Point in Polygon Problem for Arbitrary Polygons" by Hormann & Agathos
@@ -85,8 +85,8 @@ extension Path {
                     if ipNext.x > pt.x {
                         result = 1 - result
                     }else {
-                        let d = CGFloat((ip.x - pt.x) * (ipNext.y - pt.y)) -
-                            CGFloat((ipNext.x - pt.x) * (ip.y - pt.y))
+                        let d = Double((ip.x - pt.x) * (ipNext.y - pt.y)) -
+                            Double((ipNext.x - pt.x) * (ip.y - pt.y))
                         if d == 0 {
                             return -1
                         }
@@ -96,8 +96,8 @@ extension Path {
                     }
                 } else {
                     if ipNext.x > pt.x {
-                        let d = CGFloat((ip.x - pt.x) * (ipNext.y - pt.y)) -
-                            CGFloat((ipNext.x - pt.x) * (ip.y - pt.y))
+                        let d = Double((ip.x - pt.x) * (ipNext.y - pt.y)) -
+                            Double((ipNext.x - pt.x) * (ip.y - pt.y))
                         if d == 0 {
                             return -1
                         }
@@ -114,10 +114,10 @@ extension Path {
     
     /// Simplify the polygon with Ramer–Douglas–Peucker algorithm.
     /// - Parameter epsilon: Threshold value.
-     func simplify(_ epsilon:CGFloat) -> Path {
+     func simplify(_ epsilon:Double) -> Path {
          var simplePolygon = Path()
          var maxIndex = 0
-         var maxDistance = CGFloat.leastNormalMagnitude
+         var maxDistance = Double.leastNormalMagnitude
          if self.count-2 > 1 {
              
              for index in 1...self.count-2 {

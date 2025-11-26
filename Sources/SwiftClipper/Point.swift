@@ -7,9 +7,9 @@
 
 import CoreGraphics
 
-extension CGPoint: ExpressibleByArrayLiteral {
+extension CGPoint: @retroactive ExpressibleByArrayLiteral {
     
-    public init(arrayLiteral elements: CGFloat...) {
+  public init(arrayLiteral elements: Double...) {
         self.init()
         if elements.count > 1 {
             self.x = elements[0]
@@ -41,13 +41,13 @@ extension CGPoint {
         return (self.y > pt1.y) == (self.y < pt2.y)
     }
     
-    public func distance(to point: CGPoint) -> CGFloat {
+    public func distance(to point: CGPoint) -> Double {
         let dx = self.x-point.x
         let dy = self.y-point.y
         return sqrt(dx*dx+dy*dy)
     }
     
-    public func distanceFromLineSqrd(_ ln1: CGPoint, _ ln2: CGPoint) -> CGFloat {
+    public func distanceFromLineSqrd(_ ln1: CGPoint, _ ln2: CGPoint) -> Double {
         //The equation of a line in general form (Ax + By + C = 0)
         //given 2 points (x¹,y¹) & (x²,y²) is ...
         //(y¹ - y²)x + (x² - x¹)y + (y² - y¹)x¹ - (x² - x¹)y¹ = 0
@@ -61,7 +61,7 @@ extension CGPoint {
         return (C * C) / (A * A + B * B)
     }
     
-    public func slopesNearCollinear(pt2: CGPoint, pt3: CGPoint, distSqrd: CGFloat) -> Bool {
+    public func slopesNearCollinear(pt2: CGPoint, pt3: CGPoint, distSqrd: Double) -> Bool {
         //this function is more accurate when the point that's GEOMETRICALLY
         //between the other 2 points is the one that's tested for distance.
         //nb: with 'spikes', either pt1(self) or pt3 is geometrically between the other pts
@@ -86,7 +86,7 @@ extension CGPoint {
         }
     }
     
-    public func areClose(pt pt2: CGPoint, distSqrd: CGFloat) -> Bool {
+    public func areClose(pt pt2: CGPoint, distSqrd: Double) -> Bool {
         let dx = self.x - pt2.x
         let dy = self.y - pt2.y
         return ((dx * dx) + (dy * dy) <= distSqrd)
@@ -108,11 +108,11 @@ extension CGPoint {
         left = CGPoint(x: left.x+right.x,y: left.y+right.y)
     }
 
-    static func * (left:CGPoint,right:CGFloat) -> CGPoint {
+    static func * (left:CGPoint,right:Double) -> CGPoint {
         return CGPoint(x: left.x*right,y: left.y*right)
     }
 
-    static func / (left:CGPoint,right:CGFloat) -> CGPoint {
+    static func / (left:CGPoint,right:Double) -> CGPoint {
         return CGPoint(x: left.x/right,y: left.y/right)
     }
 

@@ -63,7 +63,7 @@ extension Path {
         return result!
     }
     
-    public func cleanPolygon(distance: CGFloat = 1.415) -> Path {
+    public func cleanPolygon(distance: Double = 1.415) -> Path {
         //distance = proximity in units/pixels below which vertices will be stripped.
         //Default ~= sqrt(2) so when adjacent vertices or semi-adjacent vertices have
         //both x & y coords within 1 unit, then the second vertex will be stripped.
@@ -225,7 +225,7 @@ extension Paths {
         return result
     }
     
-    public func cleanPolygons(distance: CGFloat) -> Paths {
+    public func cleanPolygons(distance: Double) -> Paths {
         var result = Paths()
         for i in self.indices {
             result.append(self[i].cleanPolygon(distance: distance))

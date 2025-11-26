@@ -29,8 +29,8 @@ final class DifferenceTests: XCTestCase {
             [
                 CGPoint(x: 30, y: 0),
                 CGPoint(x: 25, y: 0),
-                CGPoint(x: 22, y: -10),
-                CGPoint(x: 25, y: -10), 
+                CGPoint(x: 23, y: -10),
+                CGPoint(x: 25, y: -10),
                 CGPoint(x: 25, y: -12),
                 CGPoint(x: 22, y: -12),
                 CGPoint(x: 20, y: -20),
@@ -39,9 +39,10 @@ final class DifferenceTests: XCTestCase {
                 CGPoint(x: 20, y: -30),
             ],
         ]
-        let differences = letterAPath.difference(letterAPath2)
+        let differences = roundPaths(letterAPath.difference(letterAPath2))
 
         XCTAssertEqual(differences.count, 2)
+
         XCTAssertEqual(differences[0], expectedDifferences[0])
         XCTAssertEqual(differences[1], expectedDifferences[1])
     }

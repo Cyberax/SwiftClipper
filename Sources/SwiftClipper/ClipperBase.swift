@@ -26,19 +26,19 @@ public class ClipperBase {
     }
 
     class LocalMinima {
-        var y: CGFloat = 0
+        var y: Double = 0
         var leftBound: TEdge!
         var rightBound: TEdge!
         var next: LocalMinima!
     }
 
     class Scanbeam {
-        var y: CGFloat = 0
+        var y: Double = 0
         var next: Scanbeam?
     }
 
     class Maxima {
-        var x: CGFloat = 0
+        var x: Double = 0
         var next: Maxima?
         var prev: Maxima?
     }
@@ -432,7 +432,7 @@ public class ClipperBase {
         }
     }
     
-    func popLocalMinima(_ y: CGFloat, _ current:inout LocalMinima?) -> Bool {
+    func popLocalMinima(_ y: Double, _ current:inout LocalMinima?) -> Bool {
         current = currentLM
         if currentLM != nil && currentLM!.y == y {
             currentLM = currentLM!.next
@@ -467,7 +467,7 @@ public class ClipperBase {
         activeEdges = nil
     }
     
-    func insertScanbeam(_ y: CGFloat) {
+    func insertScanbeam(_ y: Double) {
         //single-linked list: sorted descending, ignoring dups.
         if scanbeam == nil {
             scanbeam = Scanbeam()
@@ -493,7 +493,7 @@ public class ClipperBase {
         }
     }
     
-    func popScanbeam(_ y:inout CGFloat) -> Bool {
+    func popScanbeam(_ y:inout Double) -> Bool {
         if scanbeam == nil {
             y = 0
             return false

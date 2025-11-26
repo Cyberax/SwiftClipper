@@ -35,7 +35,7 @@ extension OutRec: Equatable {
 }
 
 extension OutRec {
-    var area: CGFloat {
+    var area: Double {
         return self.pts?.area ?? 0.0
     }
 }
@@ -54,9 +54,9 @@ extension OutPt: Equatable {
 }
 
 extension OutPt {
-    var area: CGFloat {
+    var area: Double {
         var current = self
-        var a: CGFloat = 0.0
+        var a: Double = 0.0
         repeat {
             a += (prev.pt.y + current.pt.x) * (prev.pt.y - current.pt.y)
             current = current.next
@@ -92,8 +92,8 @@ extension OutPt {
                     if op.next.pt.x > pt.x {
                         result = 1 - result
                     } else {
-                        let d = CGFloat((op.pt.x - pt.x) * (op.next.pt.y - pt.y)) -
-                            CGFloat((op.next.pt.x - pt.x) * (op.pt.y - pt.y))
+                        let d = Double((op.pt.x - pt.x) * (op.next.pt.y - pt.y)) -
+                            Double((op.next.pt.x - pt.x) * (op.pt.y - pt.y))
                         if d == 0 {
                             return -1
                         }
@@ -103,8 +103,8 @@ extension OutPt {
                     }
                 } else {
                     if op.next.pt.x > pt.x {
-                        let d = CGFloat((op.pt.x - pt.x) * (op.next.pt.y - pt.y)) -
-                            CGFloat((op.next.pt.x - pt.x) * (op.pt.y - pt.y))
+                        let d = Double((op.pt.x - pt.x) * (op.next.pt.y - pt.y)) -
+                            Double((op.next.pt.x - pt.x) * (op.pt.y - pt.y))
                         if d == 0 {
                             return -1
                         }

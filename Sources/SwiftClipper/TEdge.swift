@@ -13,7 +13,7 @@ public class TEdge {
     var bot: CGPoint = .zero
     var curr: CGPoint = .zero  //current (updated for every new scanbeam)
     var top: CGPoint = .zero
-    var dx: CGFloat = 0.0
+    var dx: Double = 0.0
     var polyType: PolyType = .clip
     var side: EdgeSide = .left //side only refers to current side of solution poly
     var windDelta: Int = 0 //1 or -1 depending on winding direction
@@ -133,11 +133,11 @@ extension TEdge {
     }
 
     @inline(__always)
-    func topX(of currenty: CGFloat) -> CGFloat {
+    func topX(of currenty: Double) -> Double {
         if currenty == self.top.y {
             return self.top.x
         }
-        return self.bot.x + round(self.dx * (currenty - self.bot.y))
+        return self.bot.x + self.dx * (currenty - self.bot.y)
     }
     
     @inline(__always)
@@ -150,8 +150,8 @@ extension TEdge {
     
     func intersect(with edge: TEdge) -> CGPoint {
     
-        var b1:CGFloat = 0.0
-        var b2:CGFloat = 0.0
+        var b1:Double = 0.0
+        var b2:Double = 0.0
         var ip = CGPoint.zero
         if self.dx == edge.dx {
             ip.y = self.curr.y
@@ -165,7 +165,7 @@ extension TEdge {
                 ip.y = edge.bot.y
             } else {
                 b2 = edge.bot.y - (edge.bot.x / edge.dx)
-                ip.y = round(ip.x / edge.dx + b2)
+                ip.y = ip.x / edge.dx + b2
             }
         } else if edge.dx == 0 {
             ip.x = edge.bot.x
@@ -173,17 +173,17 @@ extension TEdge {
                 ip.y = self.bot.y
             } else {
                 b1 = self.bot.y - (self.bot.x / self.dx)
-                ip.y = round(ip.x / self.dx + b1)
+                ip.y = ip.x / self.dx + b1
             }
         } else {
             b1 = self.bot.x - self.bot.y * self.dx
             b2 = edge.bot.x - edge.bot.y * edge.dx
             let q = (b2-b1) / (self.dx - edge.dx)
-            ip.y = round(q)
+            ip.y = q
             if abs(self.dx) < abs(edge.dx) {
-                ip.x = round(self.dx * q + b1)
+                ip.x = self.dx * q + b1
             } else {
-                ip.x = round(edge.dx * q + b2)
+                ip.x = edge.dx * q + b2
             }
         }
         
